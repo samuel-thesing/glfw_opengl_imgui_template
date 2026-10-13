@@ -1,0 +1,43 @@
+cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+# set(CMAKE_CXX_EXPORT_COMPILE_COMMANDS OFF)
+
+project(glfw_opengl_imgui
+    VERSION 1.0.0
+    DESCRIPTION "default description"
+    LANGUAGES C CXX
+)
+
+set(PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(PROJECT_BINARY_DIR "${PROJECT_DIR}/bin/${CMAKE_BUILD_TYPE}")
+set(PROJECT_SOURCE_DIR "${PROJECT_DIR}/src")
+
+set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}" CACHE INTERNAL "")
+
+if (NOT GL_VERSION)
+    set(GL_VERSION "4.6")
+endif ()
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(Dependencies)
+
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR})
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+    LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+    ARCHIVE_OUTPUR_DIRECTORY ${PROJECT_BINARY_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    spdlog glm glfw glad imgui
+)
+
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_23)
